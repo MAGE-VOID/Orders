@@ -39,6 +39,3 @@ Guardar todos los resultados en un archivo Excel o CSV con las columnas:
 • Entrega del código en archivo `.py` o Jupyter Notebook, bien comentado y funcional.
 • Instrucciones claras para ejecutar el script localmente.
 • Grabar un video de 30–60 segundos explicando la solución.
-
-4. ⏱️ Tiempo estimado
-Fecha límite: Jueves 15 de mayo a las 22:00 (hora local).

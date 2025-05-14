@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 import time
 import undetected_chromedriver as uc
 from urllib.parse import quote_plus
@@ -29,6 +26,7 @@ class WalmartSearchScraper:
         base_url: str,
         timeout: int = 30,
         inspect_delay: int = 5,
+        verbose: bool = True,
         user_agent: str = (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
             "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -40,14 +38,20 @@ class WalmartSearchScraper:
         :param base_url: plantilla de URL con un `{}` para el término
         :param timeout: segundos a esperar por carga de elementos
         :param inspect_delay: pausa tras carga antes de extraer HTML
+        :param verbose: si es True, muestra los mensajes por pantalla
         :param user_agent: cadena UA a usar
         """
         self.brave_path = brave_path
         self.base_url = base_url
         self.timeout = timeout
         self.inspect_delay = inspect_delay
+        self.verbose = verbose
         self.user_agent = user_agent
         self.driver = None
+
+    def _log(self, *args, **kwargs):
+        if self.verbose:
+            print(*args, **kwargs)
 
     def _init_driver(self):
         opts = uc.ChromeOptions()
@@ -57,7 +61,6 @@ class WalmartSearchScraper:
         opts.add_argument("--lang=es-ES")
         opts.add_argument(f"user-agent={self.user_agent}")
         self.driver = uc.Chrome(options=opts)
-        # Forzar minimizar si el flag no bastase
         try:
             self.driver.minimize_window()
         except Exception:
@@ -80,7 +83,7 @@ class WalmartSearchScraper:
         results: List[Tuple[int, str, str, str]] = []
         for idx, query in enumerate(queries, start=1):
             search_url = self.base_url.format(quote_plus(query))
-            print(f"[{idx}/{len(queries)}] Cargando «{query}» → {search_url}")
+            self._log(f"[{idx}/{len(queries)}] Cargando «{query}» → {search_url}")
 
             try:
                 self.driver.get(search_url)
@@ -90,7 +93,7 @@ class WalmartSearchScraper:
                     )
                 )
             except (WebDriverException, TimeoutException):
-                print(f"⚠️ Navegador cerrado o timeout en «{query}». Deteniendo.")
+                self._log(f"⚠️ Navegador cerrado o timeout en «{query}». Deteniendo.")
                 break
 
             # pausa para asegurar renderizado completo
@@ -99,7 +102,7 @@ class WalmartSearchScraper:
             try:
                 html = self.driver.page_source
             except WebDriverException:
-                print("⚠️ No se pudo extraer HTML; navegador posiblemente cerrado.")
+                self._log("⚠️ No se pudo extraer HTML; navegador posiblemente cerrado.")
                 break
 
             results.append((idx, query, search_url, html))
@@ -115,7 +118,7 @@ class WalmartSearchScraper:
             except Exception:
                 pass
             self.driver = None
-            print("🛑 Navegador cerrado.")
+            self._log("🛑 Navegador cerrado.")
 
 
 if __name__ == "__main__":
@@ -130,6 +133,7 @@ if __name__ == "__main__":
         base_url="https://www.walmart.com.mx/search?q={}",
         timeout=30,
         inspect_delay=5,
+        verbose=True,
     )
 
     results = scraper.fetch_all(queries)
