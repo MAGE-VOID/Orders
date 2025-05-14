@@ -1,0 +1,44 @@
+Prueba Técnica – Scraper Developer
+
+1. Objetivo
+Desarrollar un script en Python que permita buscar productos en el sitio web solicitado, usando como referencia un archivo Excel, y extraer los datos más relevantes de los productos coincidentes.
+
+2. Instrucciones
+2.1. Entrada
+• Recibirás un archivo Excel con 3 filas (productos). Cada fila contiene:
+  – SKU
+  – Nombre del producto
+  – Marca/Proveedor
+  – Categoría
+
+2.2. Proceso
+Por cada fila del Excel:
+  1. Realizar búsqueda del producto en walmart.com.mx o mercadolibre.com.mx.
+  2. Seleccionar los productos más similares (o idénticos) al listado en el Excel.
+  3. Extraer, para cada producto seleccionado:
+     – Código identificador único
+     – Título del producto
+     – Precio actual de venta (si aplica)
+     – Precio de lista (sin descuento)
+     – URL del producto
+     – Nombre del vendedor (si aplica)
+     – URL de la imagen del producto
+
+2.3. Salida
+Guardar todos los resultados en un archivo Excel o CSV con las columnas:
+  – Producto (SKU o nombre original)
+  – Título encontrado
+  – Precio
+  – URL
+  – Vendedor
+  – Imagen
+
+3. Requisitos técnicos
+• Lenguaje: Python.
+• Librerías permitidas: requests, BeautifulSoup, Selenium u otras de scraping.
+• Entrega del código en archivo `.py` o Jupyter Notebook, bien comentado y funcional.
+• Instrucciones claras para ejecutar el script localmente.
+• Grabar un video de 30–60 segundos explicando la solución.
+
+4. ⏱️ Tiempo estimado
+Fecha límite: Jueves 15 de mayo a las 22:00 (hora local).
