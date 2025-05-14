@@ -68,7 +68,7 @@ class WalmartSearchScraper:
         results = []
         for idx, query in enumerate(queries, start=1):
             url = self.base_url.format(quote_plus(query))
-            self._log(f"[{idx}/{len(queries)}] Cargando '{query}' → {url}")
+            self._log(f"[{idx}/{len(queries)}] Cargando '{query}' -> {url}")
             try:
                 self.driver.get(url)
                 WebDriverWait(self.driver, self.timeout).until(
@@ -102,4 +102,4 @@ class WalmartSearchScraper:
                 pass
             finally:
                 self.driver = None
-                self._log("🛑 Navegador cerrado.")
+                self._log("[STOP] Navegador cerrado.")
