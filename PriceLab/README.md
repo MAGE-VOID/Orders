@@ -33,15 +33,9 @@ Este proyecto incluye dos scripts para automatizar búsquedas en Walmart México
 
 ## Configuración
 
-1.  Clonar este repositorio y entrar en la carpeta raíz:
-    ```bash
-    git clone <tu-repo-url>
-    cd PriceLab
-    ```
+1.  Colocar el Excel de entrada `model_file_products.xlsx` en la carpeta raíz.
 
-2.  Colocar el Excel de entrada `model_file_products.xlsx` en la carpeta raíz.
-
-3.  Verificar que el Excel contiene las columnas:
+2.  Verificar que el Excel contiene las columnas:
     * SkuProducto
     * Producto
     * Linea
