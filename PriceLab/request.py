@@ -106,54 +106,43 @@ def process_search(sku: str, query: str, html_str: str) -> list[dict[str, str]]:
 def main():
     excel_path = Path(r"G:\Desktop\Orders\PriceLab\model_file_products.xlsx")
     output_file = excel_path.parent / "resultados_walmart.xlsx"
+    products = load_products(excel_path)
+    if not products:
+        print("No hay productos para procesar.", file=sys.stderr)
+        return
 
-    try:
-        products = load_products(excel_path)
-        if not products:
-            print("No hay productos para procesar.", file=sys.stderr)
-            return
+    scraper = WalmartSearchScraper(
+        brave_path=r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe",
+        base_url="https://www.walmart.com.mx/search?q={}",
+        timeout=30,
+        inspect_delay=5,
+        verbose=True,
+    )
 
-        scraper = WalmartSearchScraper(
-            brave_path=r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe",
-            base_url="https://www.walmart.com.mx/search?q={}",
-            timeout=30,
-            inspect_delay=5,
-            verbose=True,
+    queries = [q for _, q in products]
+    results = scraper.fetch_all(queries)
+
+    all_data = []
+    for (sku, query), (_, _, _, html_str) in zip(products, results):
+        all_data.extend(process_search(sku, query, html_str))
+
+    if all_data:
+        df = pd.DataFrame(
+            all_data,
+            columns=[
+                "SKU interno",
+                "Busqueda",
+                "Título",
+                "Precio",
+                "URL",
+                "Vendedor",
+                "Imagen",
+            ],
         )
-
-        queries = [q for _, q in products]
-        results = scraper.fetch_all(queries)
-
-        all_data = []
-        for (sku, query), (_, _, _, html_str) in zip(products, results):
-            all_data.extend(process_search(sku, query, html_str))
-
-        if all_data:
-            df = pd.DataFrame(
-                all_data,
-                columns=[
-                    "SKU interno",
-                    "Busqueda",
-                    "Título",
-                    "Precio",
-                    "URL",
-                    "Vendedor",
-                    "Imagen",
-                ],
-            )
-            df.to_excel(output_file, index=False)
-            print(f"Datos guardados en: {output_file}")
-        else:
-            print("No se encontraron productos relevantes.", file=sys.stderr)
-
-    except Exception as e:
-        print(f"ERROR: {e}", file=sys.stderr)
-        sys.exit(1)
-    finally:
-        try:
-            scraper.close()
-        except NameError:
-            pass
+        df.to_excel(output_file, index=False)
+        print(f"Datos guardados en: {output_file}")
+    else:
+        print("No se encontraron productos relevantes.", file=sys.stderr)
 
 
 if __name__ == "__main__":
