@@ -79,6 +79,7 @@ python main.py
 
 Cada documento genera una salida JSON como esta:
 
+```
 {
   "version": "1.0",
   "metadata": {
@@ -99,7 +100,7 @@ Cada documento genera una salida JSON como esta:
     },
     "labels": {
       "tipo_documento": "Contrato",
-      "justificacion": "..."
+      "justificacion": "INEE valida..."
     },
     "tokens_usage": {
       "prompt_tokens": 64,
@@ -108,6 +109,8 @@ Cada documento genera una salida JSON como esta:
     }
   }
 }
+```
+
 
 
 ## Personalización
