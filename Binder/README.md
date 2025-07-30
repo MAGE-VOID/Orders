@@ -1,14 +1,3 @@
----
-title: "ChatGPT"
-source: "https://chatgpt.com/?model=o4-mini-high&temporary-chat=true"
-author:
-published:
-created: 2025-07-30
-description: "ChatGPT helps you get answers, find inspiration and be more productive. It is free to use and easy to try. Just ask and ChatGPT can help with writing, learning, brainstorming and more."
-tags:
-  - "clippings"
----
-```
 # Document Processor
 
 Una herramienta de procesamiento y clasificación de documentos PDF basada en LLMs y OCR.
@@ -44,7 +33,6 @@ Está diseñado para ser sencillo de configurar y ejecutar, ideal para flujos de
   - Código dividido en extractor, analizador, clasificador y pipeline
 
 ## Estructura de Directorios
-```
 
 ├── main.py  
 ├── requirements.txt  
@@ -65,7 +53,6 @@ Está diseñado para ser sencillo de configurar y ejecutar, ideal para flujos de
 ├── pdf.py  
 └── ocr.py
 
-```
 ## Requisitos
 
 - Python ≥ 3.8  
@@ -86,14 +73,14 @@ venv\Scripts\activate.bat     # Windows
 # Instalar dependencias
 pip install --upgrade pip
 pip install -r requirements.txt
-```
+
 
 ## Configuración
 
 1. Crear un archivo `.env` en la raíz del proyecto:
-```
+
 OPENAI_API_KEY=tu_api_key_de_openai
-```
+
 2. Personaliza el archivo `prompt_instructions.txt` para definir cómo debe clasificar el LLM.
 3. Puedes ajustar parámetros por defecto en `document_processor/config.py`.
 
@@ -101,13 +88,13 @@ OPENAI_API_KEY=tu_api_key_de_openai
 
 Ejecuta el siguiente comando para procesar todos los PDFs en `pdf_examples/`:
 
-```
+
 python main.py
-```
+
 
 Cada documento genera una salida JSON como esta:
 
-```
+
 {
   "version": "1.0",
   "metadata": {
@@ -137,7 +124,7 @@ Cada documento genera una salida JSON como esta:
     }
   }
 }
-```
+
 
 ## Personalización
 
@@ -160,6 +147,5 @@ Cada documento genera una salida JSON como esta:
 
 MIT License. Consulta el archivo `LICENSE` para más información.
 
-```
+
 Puedes copiarlo directamente en tu archivo \`README.md\`. ¿Quieres que también incluya un ejemplo de \`.env\` o instrucciones para ejecutar pruebas?
-```
