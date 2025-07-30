@@ -1,50 +1,47 @@
+# engine_llm/llm/engine.py
+
 import json
-from typing import Dict
+from typing import Dict, Tuple
 from .client import LLMClient
 
 
 class LegalDocumentEngine:
     """
-    Envuelve las instrucciones (prompt), fuerza salida JSON y reintenta si no lo es.
+    Envuelve instrucciones y devuelve (labels_dict, tokens_usage).
     """
 
-    # Número de veces que intentaremos corregir la salida JSON
     MAX_JSON_RETRIES = 2
 
     def __init__(self, instructions: str, client: LLMClient):
-        # Añadimos al prompt una instrucción clara de salida JSON estricta
-        strict_instructions = (
+        strict = (
             instructions
-            + "\n\nIMPORTANTE: responde únicamente con un JSON válido, sin ningún texto adicional."
+            + "\n\nIMPORTANTE: responde únicamente con un JSON válido, sin texto adicional."
         )
-        self.instructions = strict_instructions
+        self.instructions = strict
         self.client = client
 
-    def classify(self, text: str) -> Dict[str, str]:
-        # Construimos el mensaje inicial
+    def classify(self, text: str) -> Tuple[Dict[str, str], Dict[str, int]]:
         messages = [
             {"role": "system", "content": self.instructions},
             {"role": "user", "content": text},
         ]
 
-        raw = self.client.chat(messages)
-        # Intento directo de parseo
+        raw, usage = self.client.chat(messages)
         try:
-            return json.loads(raw)
+            labels = json.loads(raw)
+            return labels, usage
         except json.JSONDecodeError:
-            # Si falla, reintentamos pedirle que corrija la salida
             for _ in range(self.MAX_JSON_RETRIES):
                 fix_prompt = (
                     "La salida anterior no era un JSON válido:\n"
-                    "```\n" + raw + "\n```\n"
+                    f"```\n{raw}\n```\n"
                     "Por favor, responde AHORA _solo_ con el JSON válido."
                 )
                 messages.append({"role": "user", "content": fix_prompt})
-                raw = self.client.chat(messages)
+                raw, usage = self.client.chat(messages)
                 try:
-                    return json.loads(raw)
+                    labels = json.loads(raw)
+                    return labels, usage
                 except json.JSONDecodeError:
                     continue
-
-            # Si después de todos los reintentos sigue mal, consideramos el error
             raise ValueError("No se pudo obtener JSON válido tras múltiples intentos.")

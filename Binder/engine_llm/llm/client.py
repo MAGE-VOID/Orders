@@ -1,5 +1,7 @@
+# engine_llm/llm/client.py
+
 import time
-from typing import List, Dict, Protocol
+from typing import List, Dict, Protocol, Tuple
 import openai
 
 
@@ -10,33 +12,36 @@ class ServiceUnavailableError(Exception):
 
 
 class LLMClient(Protocol):
-    def chat(self, messages: List[Dict], **kwargs) -> str: ...
+    def chat(self, messages: List[Dict], **kwargs) -> Tuple[str, Dict[str, int]]: ...
 
 
 class OpenAIClient:
     """
-    Cliente de OpenAI con reintentos en caso de cualquier excepción al llamar al API.
-    Tras agotar reintentos, lanza ServiceUnavailableError.
+    Cliente de OpenAI con reintentos. Ahora devuelve (content, tokens_usage).
     """
 
     def __init__(self, api_key: str, model: str):
-        # Usa el cliente de la librería OpenAI
         self.client = openai.OpenAI(api_key=api_key)
         self.model = model
 
     def chat(
         self, messages: List[Dict], max_retries: int = 3, retry_delay: float = 2.0
-    ) -> str:
+    ) -> Tuple[str, Dict[str, int]]:
         for attempt in range(max_retries):
             try:
                 resp = self.client.chat.completions.create(
                     model=self.model, messages=messages
                 )
-                return resp.choices[0].message.content
+                content = resp.choices[0].message.content
+                usage = resp.usage
+                tokens_usage = {
+                    "prompt_tokens": usage.prompt_tokens,
+                    "completion_tokens": usage.completion_tokens,
+                    "total_tokens": usage.total_tokens,
+                }
+                return content, tokens_usage
             except Exception as e:
-                # Espera y reintenta
                 if attempt < max_retries - 1:
                     time.sleep(retry_delay * (2**attempt))
                     continue
-                # Si tras todos los reintentos sigue fallando => servicio no disponible
                 raise ServiceUnavailableError("OpenAI service unavailable") from e
