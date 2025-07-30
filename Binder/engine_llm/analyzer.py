@@ -1,4 +1,3 @@
-import logging
 from pathlib import Path
 from dataclasses import dataclass
 from typing import Union
@@ -18,7 +17,6 @@ class PDFAnalyzer:
     def __init__(self, max_pages: int = 5):
         self.max_pages = max_pages
         self.extractor = TextExtractor()
-        self.logger = logging.getLogger(self.__class__.__name__)
 
     def analyze(self, pdf_path: Path) -> AnalysisResult:
         name = pdf_path.name
@@ -30,5 +28,4 @@ class PDFAnalyzer:
             text = self.extractor.extract(data)
             return AnalysisResult(file=name, text=text)
         except Exception as e:
-            self.logger.error("Error analizando %s: %s", name, e)
             return AnalysisResult(file=name, error=str(e))
