@@ -2,29 +2,46 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+# ————— VARIABLES DE CONFIGURACIÓN —————
+ENV_FILE_NAME = ".env"
+INSTRUCTIONS_FILE_NAME = "prompt_instructions.txt"
+PDF_EXAMPLES_DIR = "pdf_examples"
+
+ENV_VAR_API_KEY = "OPENAI_API_KEY"
+DEFAULT_LLM_MODEL = "gpt-3.5-turbo"
+
+ENV_VAR_MAX_PAGES = "MAX_PDF_PAGES"
+
+DEFAULT_MAX_PAGES = 5
+# —————————————————————————————————————
+
 
 class Config:
+    """
+    Carga de configuración centralizada.
+    """
+
     def __init__(self, base_dir: Path = Path(__file__).parent.parent):
         self.base_dir = base_dir
-        self.env_file = base_dir / ".env"
-        self.instructions_file = base_dir / "prompt_instructions.txt"
-        self.input_dir = base_dir / "pdf_examples"
+        self.env_file = base_dir / ENV_FILE_NAME
+        self.instructions_file = base_dir / INSTRUCTIONS_FILE_NAME
+        self.input_dir = base_dir / PDF_EXAMPLES_DIR
 
         self._load_env()
-        self.api_key = self._get("OPENAI_API_KEY")
+        self.api_key = self._get_env_var(ENV_VAR_API_KEY)
+        self.model = DEFAULT_LLM_MODEL
         self.instructions = self._read_text(self.instructions_file)
-        self.max_pages = int(os.getenv("MAX_PDF_PAGES", "5"))
-        self.model = os.getenv("LLM_MODEL", "gpt-3.5-turbo")
+        self.max_pages = int(os.getenv(ENV_VAR_MAX_PAGES, str(DEFAULT_MAX_PAGES)))
 
-    def _load_env(self):
+    def _load_env(self) -> None:
         if self.env_file.exists():
             load_dotenv(self.env_file)
 
-    def _get(self, key: str) -> str:
-        v = os.getenv(key)
-        if not v:
+    def _get_env_var(self, key: str) -> str:
+        val = os.getenv(key)
+        if not val:
             raise RuntimeError(f"Falta variable de entorno `{key}`")
-        return v
+        return val
 
     def _read_text(self, path: Path) -> str:
         if not path.exists():

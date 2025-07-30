@@ -9,15 +9,12 @@ def main():
     logging.basicConfig(
         level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s"
     )
+
+    # Cargo TODO: rutas, API key, instrucciones y parámetros
     config = Config()
 
-    pipeline = DocumentPipeline(
-        input_dir=config.input_dir,
-        analyzer_max_pages=config.max_pages,
-        classifier_instructions=config.instructions,
-        classifier_model=config.model,
-        classifier_api_key=config.api_key,
-    )
+    # Le paso TODO el config al pipeline
+    pipeline = DocumentPipeline(config)
     pipeline.run()
 
 

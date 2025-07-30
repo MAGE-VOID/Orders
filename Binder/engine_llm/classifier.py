@@ -15,10 +15,15 @@ class ClassificationResult:
 
 
 class DocumentClassifier:
+    """
+    Encapsula la llamada al LLM para clasificar documentos.
+    El parámetro `model` debe llegarnos desde Config.
+    """
+
     def __init__(self, instructions: str, api_key: str, model: str):
-        self.client = OpenAIClient(api_key=api_key, model=model)
-        self.engine = LegalDocumentEngine(instructions, client=self.client)
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.client = OpenAIClient(api_key=api_key, model=model)
+        self.engine = LegalDocumentEngine(instructions=instructions, client=self.client)
 
     def classify(self, analysis: AnalysisResult) -> ClassificationResult:
         if analysis.error:
