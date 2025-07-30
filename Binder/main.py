@@ -1,9 +1,8 @@
 from pathlib import Path
 import logging
 
-from engine_llm.config import Config
-from engine_llm.pipeline import DocumentPipeline
-
+from document_processor.config import Config
+from document_processor.pipeline import DocumentPipeline
 
 def main():
     config = Config()

@@ -1,5 +1,7 @@
+fitz
 openai
 pdf2image
+pdfplumber
 Pillow
 PyPDF2
 pytesseract
