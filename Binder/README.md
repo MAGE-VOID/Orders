@@ -32,13 +32,15 @@ Este proyecto permite:
 
 ## Estructura de Directorios
 
+```
+
 ├── main.py  
 ├── requirements.txt  
-├── prompt_instructions.txt  
-├── pdf_examples/  
+├── prompt\_instructions.txt  
+├── pdf\_examples/  
 │ ├── 1.pdf  
 │ └── ...  
-└── document_processor/  
+└── document\_processor/  
 ├── config.py  
 ├── pipeline.py  
 ├── analyzer.py  
@@ -50,6 +52,8 @@ Este proyecto permite:
 └── utils/  
 ├── pdf.py  
 └── ocr.py
+
+```
 
 ## Requisitos
 
