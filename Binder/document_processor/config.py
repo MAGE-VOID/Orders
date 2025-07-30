@@ -1,4 +1,4 @@
-# engine_llm/config.py
+# document_processor/config.py
 
 import os
 from pathlib import Path
