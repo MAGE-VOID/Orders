@@ -6,27 +6,27 @@ Una herramienta de procesamiento y clasificación de documentos PDF basada en LL
 
 Este proyecto permite:
 
-- Leer y procesar archivos PDF de un directorio
-- Extraer texto de forma robusta (PyMuPDF, pdfplumber y OCR)
-- Enviar el texto a un LLM para clasificar documentos legales siguiendo instrucciones predefinidas
-- Imprimir el resultado en formato JSON (metadatos, estado, etiquetas y uso de tokens)
+- Leer y procesar archivos PDF de un directorio  
+- Extraer texto de forma robusta (PyMuPDF, pdfplumber y OCR)  
+- Enviar el texto a un LLM para clasificar documentos legales siguiendo instrucciones predefinidas  
+- Imprimir el resultado en formato JSON (metadatos, estado, etiquetas y uso de tokens)  
 
 ## Características
 
 - **Extracción de texto multilayer**
-  - PyMuPDF para texto selectable
-  - pdfplumber para layouts complejos
-  - OCR página-a-página con Tesseract
+  - PyMuPDF para texto selectable  
+  - pdfplumber para layouts complejos  
+  - OCR página-a-página con Tesseract  
 - **Clasificación con LLM**
-  - Cliente OpenAI con reintentos
-  - Motor que asegura salida JSON válida
+  - Cliente OpenAI con reintentos  
+  - Motor que asegura salida JSON válida  
 - **Control de páginas**
-  - Límite configurable de páginas (por defecto 5)
-  - Errores claros si se excede el límite
+  - Límite configurable de páginas (por defecto 5)  
+  - Errores claros si se excede el límite  
 - **Salida JSON**
-  - Metadatos del archivo (tamaño, páginas, imágenes)
-  - Estado del procesamiento
-  - Etiquetas resultantes y uso de tokens
+  - Metadatos del archivo (tamaño, páginas, imágenes)  
+  - Estado del procesamiento  
+  - Etiquetas resultantes y uso de tokens  
 - **Estructura modular**
   - Código dividido en extractor, analizador, clasificador y pipeline
 
@@ -53,8 +53,8 @@ Este proyecto permite:
 
 ## Requisitos
 
-- Python ≥ 3.8
-- [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) instalado
+- Python ≥ 3.8  
+- [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) instalado  
 - Variables de entorno en un archivo \`.env\` (ver más abajo)
 
 ## Instalación
@@ -80,34 +80,35 @@ python main.py
 Cada documento genera una salida JSON como esta:
 
 {
-"version": "1.0",
-"metadata": {
-"count": 1,
-"file": "1.pdf",
-"timestamp": "2025-07-30T15:42:10Z",
-"llm_model": "gpt-4.1-nano",
-"file_size_bytes": 34567,
-"page_count": 3,
-"processing_time_ms": 870,
-"has_images": false
-},
-"classification": {
-"status": {
-"state": "ok",
-"error_code": "",
-"description": ""
-},
-"labels": {
-"tipo_documento": "Contrato",
-"justificacion": "..."
-},
-"tokens_usage": {
-"prompt_tokens": 64,
-"completion_tokens": 32,
-"total_tokens": 96
+  "version": "1.0",
+  "metadata": {
+    "count": 1,
+    "file": "1.pdf",
+    "timestamp": "2025-07-30T15:42:10Z",
+    "llm_model": "gpt-4.1-nano",
+    "file_size_bytes": 34567,
+    "page_count": 3,
+    "processing_time_ms": 870,
+    "has_images": false
+  },
+  "classification": {
+    "status": {
+      "state": "ok",
+      "error_code": "",
+      "description": ""
+    },
+    "labels": {
+      "tipo_documento": "Contrato",
+      "justificacion": "..."
+    },
+    "tokens_usage": {
+      "prompt_tokens": 64,
+      "completion_tokens": 32,
+      "total_tokens": 96
+    }
+  }
 }
-}
-}
+
 
 ## Personalización
 
