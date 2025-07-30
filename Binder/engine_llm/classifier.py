@@ -1,24 +1,32 @@
-import os
-from typing import Dict, List
+import logging
+from dataclasses import dataclass
+from typing import Any, Dict
 
+from .llm.client import OpenAIClient
 from .llm.engine import LegalDocumentEngine
+from .analyzer import AnalysisResult
 
-class SingleFileClassifier:
-    """
-    Toma la salida de PDFAnalyzer.analyze() y devuelve clasificación con LLM.
-    """
 
-    def __init__(self, instructions: str, api_key: str, model: str = "gpt-3.5-turbo"):
-        os.environ["OPENAI_API_KEY"] = api_key
-        self.engine = LegalDocumentEngine(instructions=instructions, model=model)
+@dataclass
+class ClassificationResult:
+    file: str
+    labels: Dict[str, Any] = None
+    error: str = ""
 
-    def classify(self, analysis: Dict[str, str]) -> Dict[str, str]:
-        # Propagar error de análisis si existe
-        if "error" in analysis:
-            return analysis
+
+class DocumentClassifier:
+    def __init__(self, instructions: str, api_key: str, model: str):
+        self.client = OpenAIClient(api_key=api_key, model=model)
+        self.engine = LegalDocumentEngine(instructions, client=self.client)
+        self.logger = logging.getLogger(self.__class__.__name__)
+
+    def classify(self, analysis: AnalysisResult) -> ClassificationResult:
+        if analysis.error:
+            return ClassificationResult(file=analysis.file, error=analysis.error)
 
         try:
-            result = self.engine.classify(analysis["text"])
-            return {"file": analysis["file"], **result}
+            resp = self.engine.classify(analysis.text)
+            return ClassificationResult(file=analysis.file, labels=resp)
         except Exception as e:
-            return {"file": analysis["file"], "error": str(e)}
+            self.logger.error("Error clasificando %s: %s", analysis.file, e)
+            return ClassificationResult(file=analysis.file, error=str(e))
